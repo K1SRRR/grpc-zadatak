@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: userdb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - grpc-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # gRPC Server Service
+  user-service-server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: user-service-server
+    ports:
+      - "50051:50051"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: userdb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - grpc-network
+    restart: unless-stopped
+
+  # gRPC Client Service
+  user-service-client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: user-service-client
+    depends_on:
+      - user-service-server
+      - postgres
+    networks:
+      - grpc-network
+    restart: "no"
+
+networks:
+  grpc-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
