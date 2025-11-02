@@ -64,8 +64,6 @@ docker-compose down -v
 
 ## 🎥 Video demonstracija
 
-[![Video demonstracija - gRPC User Service](https://img.youtube.com/vi/viWvYNskk7s/0.jpg)](https://www.youtube.com/watch?v=viWvYNskk7s)
-
 Kratka video demonstracija pokazuje rad ovog gRPC User Service-a: pokretanje servera i klijenta, kreiranje i dobavljanje korisnika, brisanje naloga pomoću Docker Compose-a.
 
-Direktno na YouTube-u: https://www.youtube.com/watch?v=viWvYNskk7s
+YouTube link: https://www.youtube.com/watch?v=viWvYNskk7s
